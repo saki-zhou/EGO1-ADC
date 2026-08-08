@@ -20,9 +20,7 @@ module volt_display(
         end
     end
 
-    // ==========================================
-    // 修改：将原来的 adc_data 替换为 stable_adc_data
-    // ==========================================
+
     // XADC的数据是16位的，但有效位是高12位 [15:4]
     wire [11:0] valid_adc = stable_adc_data[15:4];
     // XADC的数据是16位的，但有效位是高12位 [15:4]
@@ -58,13 +56,11 @@ wire [3:0] digit_3 =voltage_mv % 10;
 
 
     always @(*) begin
-        // 赋默认值，消灭 Latch
         an = 4'b0000;
         current_digit = 4'b0000;
         dp = 1'b0;
 
         if (sw0) begin
-            // 【终极修复：保持 an 顺序不变，直接反转数据和年月日的绑定！】
             case(scan_sel)
                 2'b00: begin an = 4'b0001; current_digit = digit_3; dp = 1'b0; end //  digit_3 
                 2'b01: begin an = 4'b0010; current_digit = digit_2; dp = 1'b0; end //  digit_2 
@@ -73,7 +69,6 @@ wire [3:0] digit_3 =voltage_mv % 10;
                 default: begin an = 4'b0000; current_digit = 4'b0000; dp = 1'b0; end
             endcase
             
-            // 硬件消影（Blanking），解决重影问题
             if (scan_cnt[14:8] == 7'b0000000) begin
                 an = 4'b0000; // 熄灭片选，等待段选信号彻底稳定
             end
