@@ -1,0 +1,2 @@
+# EGO1-ADC
+使用EGO1进行简易ADC实验
